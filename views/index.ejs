@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Coronavirus cases</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">
+            Coronavirus Cases By Country
+        </h1>
+        <form id="form">
+            <div class="form-group">
+                <label for="comment">Text:</label>
+                <textarea class="form-control" rows="5" id="text"></textarea>
+              </div>
+            <div class="form-group">
+                <label for="sel1">Select File Extension:</label>
+                <select class="form-control" id="extension" name="extension">
+                    
+                    <option value="txt" selected>TXT</option>
+                    <option value="csv">CSV</option>
+                    <option value="docx">DOCX</option>
+                    <option value="html">HTML</option>
+                    <option value="js">Javascript</option>
+                 </select>
+              </div>
+              <button id="button" class="btn btn-danger btn-block">Download File</button>
+        </form>
+
+        <div id="result">
+
+        </div>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    var selectedExtension = "txt"
+    var textContents
+    $(document).ready(function(){
+
+
+        $("#form").submit(function(e){
+            e.preventDefault()
+
+            textContents = $("#text").val()
+
+            selectedExtension = $("#extension").children("option:selected").val();
+
+            downloadFile(textContents,selectedExtension)
+        })
+
+
+    $("#extension").change(function(){
+        selectedExtension = $(this).children("option:selected").val();
+        
+    
+    });
+});
+
+function downloadFile(textContents,selectedExtension){
+    $.ajax({
+        url:'/downloadfile',
+        method:'POST',
+        data:{text:textContents,extension:selectedExtension},
+        success:function(data){
+            console.log(data.path)
+
+            window.open('/download?path='+data.path)
+          location.reload();
+        }
+    })
+}
+</script>
+</html>
